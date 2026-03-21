@@ -1,0 +1,6 @@
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Dominio\bin\Debug\GridFlow.Dominio.dll
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Dominio\bin\Debug\GridFlow.Dominio.pdb
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Dominio\obj\Debug\GridFlow.Dominio.csproj.AssemblyReference.cache
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Dominio\obj\Debug\GridFlow.Dominio.csproj.CoreCompileInputs.cache
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Dominio\obj\Debug\GridFlow.Dominio.dll
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Dominio\obj\Debug\GridFlow.Dominio.pdb
