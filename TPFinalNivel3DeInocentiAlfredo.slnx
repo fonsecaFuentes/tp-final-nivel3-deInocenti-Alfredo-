@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="GridFlow.Dominio/GridFlow.Dominio.csproj" Id="9f4152aa-3b40-454e-88dc-99588dd2380a" />
+  <Project Path="GridFlow.Negocio/GridFlow.Negocio.csproj" Id="535acef8-da86-4e42-b527-534195d4db51" />
+  <Project Path="GridFlow.Web/GridFlow.Web.csproj" Id="7c8561e2-4523-4d8e-85ff-53135b93fa9b" />
+</Solution>
