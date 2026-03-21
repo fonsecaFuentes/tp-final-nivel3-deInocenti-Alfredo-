@@ -1,0 +1,9 @@
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\bin\Debug\GridFlow.Negocio.dll
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\bin\Debug\GridFlow.Negocio.pdb
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\bin\Debug\GridFlow.Dominio.dll
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\bin\Debug\GridFlow.Dominio.pdb
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\obj\Debug\GridFlow.Negocio.csproj.AssemblyReference.cache
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\obj\Debug\GridFlow.Negocio.csproj.CoreCompileInputs.cache
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\obj\Debug\GridFlow.4A908305.Up2Date
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\obj\Debug\GridFlow.Negocio.dll
+E:\data\Cursos\Maxi_programa\Curso_C#_Nivel3\Proyecto\TPFinalNivel3DeInocentiAlfredo\GridFlow.Negocio\obj\Debug\GridFlow.Negocio.pdb
