@@ -1,0 +1,13 @@
+﻿/* Limitar la descripción a 3 líneas para mantener el tamaño de la tarjeta */
+.text-truncate-multiline {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 4.5em;
+}
+
+/* Efecto hover custom para links del footer */
+.text-white-hover:hover {
+    color: #fff !important;
+}
