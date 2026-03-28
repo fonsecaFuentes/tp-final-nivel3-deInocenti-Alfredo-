@@ -49,6 +49,7 @@
     <Compile Include="MarcaNegocio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelacionadorDatos.cs" />
+    <Compile Include="Seguridad\Seguridad.cs" />
     <Compile Include="UsuarioNegocio.cs" />
     <Compile Include="Utilidades\DBHelper.cs" />
     <Compile Include="Validaciones\ValidadorGeneral.cs" />

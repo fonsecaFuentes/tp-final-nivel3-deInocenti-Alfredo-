@@ -67,18 +67,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdminArticulos.aspx" />
     <Content Include="Content\site.css" />
     <Content Include="Default.aspx" />
+    <Content Include="DetalleArticulo.aspx" />
+    <Content Include="Error.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminArticulos.aspx.cs">
+      <DependentUpon>AdminArticulos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AdminArticulos.aspx.designer.cs">
+      <DependentUpon>AdminArticulos.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DetalleArticulo.aspx.cs">
+      <DependentUpon>DetalleArticulo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DetalleArticulo.aspx.designer.cs">
+      <DependentUpon>DetalleArticulo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Error.aspx.cs">
+      <DependentUpon>Error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Error.aspx.designer.cs">
+      <DependentUpon>Error.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -28,7 +28,7 @@ namespace GridFlow.Negocio
                     aux.Codigo = datos.Lector["Codigo"] is DBNull ? null : (string)datos.Lector["Codigo"];
                     aux.Nombre = datos.Lector["Nombre"] is DBNull ? null : (string)datos.Lector["Nombre"];
                     aux.Descripcion = datos.Lector["Descripcion"] is DBNull ? null : (string)datos.Lector["Descripcion"];
-                    aux.Precio = datos.Lector["Precio"] is DBNull ? (decimal?) null : (decimal)datos.Lector["Precio"];
+                    aux.Precio = datos.Lector["Precio"] is DBNull ? (decimal?)null : (decimal)datos.Lector["Precio"];
                     aux.ImagenUrl = datos.Lector["ImagenUrl"] is DBNull ? null : (string)datos.Lector["ImagenUrl"];
 
                     // Categoria
@@ -189,9 +189,159 @@ namespace GridFlow.Negocio
             }
         }
 
-       //public List<Articulo> Filtrar(string campo, string criterio, string filtro, string filtroExtra = null)
-       // {
-            
-       // }
+        public List<Articulo> Filtrar(FiltroArticulo filtro)
+        {
+            List<Articulo> articulos = new List<Articulo>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                string consulta = @"
+                        SELECT 
+                            A.Id,
+                            A.Codigo,
+                            A.Nombre,
+                            A.Descripcion,
+                            A.ImagenUrl,
+                            A.Precio,
+                            A.IdCategoria,
+                            A.IdMarca,
+                            C.Descripcion AS Categoria,
+                            M.Descripcion AS Marca
+                        FROM ARTICULOS A
+                        INNER JOIN CATEGORIAS C ON C.Id = A.IdCategoria
+                        INNER JOIN MARCAS M ON M.Id = A.IdMarca
+                        WHERE ";
+
+                string condicion = ConstruirCondicion(filtro);
+                consulta += condicion;
+
+                datos.SetearConsulta(consulta);
+                AgregarParametros(datos, filtro);
+
+                datos.EjecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Articulo obtenido = new Articulo();
+                    obtenido.Id = (int)datos.Lector["Id"];
+                    obtenido.Codigo = datos.Lector["Codigo"] as string;
+                    obtenido.Nombre = datos.Lector["Nombre"] as string;
+                    obtenido.Descripcion = datos.Lector["Descripcion"] as string;
+                    obtenido.ImagenUrl = datos.Lector["ImagenUrl"] as string;
+                    obtenido.Precio = datos.Lector["Precio"] is DBNull ? 0 : (decimal)datos.Lector["Precio"];
+
+                    if (!(datos.Lector["IdCategoria"] is DBNull))
+                    {
+                        obtenido.Categoria = new Categoria();
+                        obtenido.Categoria.Id = (int)datos.Lector["IdCategoria"];
+                        obtenido.Categoria.Descripcion = (string)datos.Lector["Categoria"];
+                    }
+
+                    if (!(datos.Lector["IdMarca"] is DBNull))
+                    {
+                        obtenido.Marca = new Marca();
+                        obtenido.Marca.Id = (int)datos.Lector["IdMarca"];
+                        obtenido.Marca.Descripcion = (string)datos.Lector["Marca"];
+                    }
+
+                    articulos.Add(obtenido);
+                }
+
+                return articulos;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+
+        private string ConstruirCondicion(FiltroArticulo filtro)
+        {
+            switch (filtro.Campo)
+            {
+                case "Precio":
+                    switch (filtro.Operador)
+                    {
+                        case "Mayor":
+                            return "A.Precio > @Valor1";
+                        case "Menor":
+                            return "A.Precio < @Valor1";
+                        case "Entre":
+                            return "A.Precio BETWEEN @Valor1 AND @Valor2";
+                    }
+                    break;
+
+                case "Nombre":
+                    switch (filtro.Operador)
+                    {
+                        case "Comienza":
+                            return "A.Nombre LIKE @Valor1";
+                        case "Termina":
+                            return "A.Nombre LIKE @Valor1";
+                        case "Contiene":
+                            return "A.Nombre LIKE @Valor1";
+                    }
+                    break;
+
+                case "Codigo":
+                    switch (filtro.Operador)
+                    {
+                        case "Comienza":
+                            return "A.Codigo LIKE @Valor1";
+                        case "Termina":
+                            return "A.Codigo LIKE @Valor1";
+                        case "Contiene":
+                            return "A.Codigo LIKE @Valor1";
+                    }
+                    break;
+
+                case "Marca":
+                    return "A.IdMarca = @Valor1";
+
+                case "Categoria":
+                    return "A.IdCategoria = @Valor1";
+            }
+
+            throw new Exception("Filtro inválido.");
+        }
+
+        private void AgregarParametros(AccesoDatos datos, FiltroArticulo filtro)
+        {
+            switch (filtro.Campo)
+            {
+                case "Precio":
+                    datos.SetearParametros("@Valor1", decimal.Parse(filtro.Valor1));
+
+                    if (filtro.Operador == "Entre")
+                        datos.SetearParametros("@Valor2", decimal.Parse(filtro.Valor2));
+                    break;
+
+                case "Nombre":
+                case "Codigo":
+                    switch (filtro.Operador)
+                    {
+                        case "Comienza":
+                            datos.SetearParametros("@Valor1", filtro.Valor1 + "%");
+                            break;
+                        case "Termina":
+                            datos.SetearParametros("@Valor1", "%" + filtro.Valor1);
+                            break;
+                        case "Contiene":
+                            datos.SetearParametros("@Valor1", "%" + filtro.Valor1 + "%");
+                            break;
+                    }
+                    break;
+
+                case "Marca":
+                case "Categoria":
+                    datos.SetearParametros("@Valor1", int.Parse(filtro.Valor1));
+                    break;
+            }
+        }
     }
 }
