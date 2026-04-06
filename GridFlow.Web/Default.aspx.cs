@@ -1,5 +1,6 @@
 ﻿using GridFlow.Dominio;
 using GridFlow.Negocio;
+using GridFlow.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,12 @@ namespace GridFlow.Web
             FiltroAvanzado = chkAvanzado.Checked;
 
             CargarTarjetas();
+
+            if (!IsPostBack)
+            {
+                txtFiltro.Enabled = true;
+                LimpiarControlesFiltro();
+            }
         }
 
         public void CargarTarjetas()
@@ -53,70 +60,75 @@ namespace GridFlow.Web
         {
             FiltroAvanzado = chkAvanzado.Checked;
             txtFiltro.Enabled = !FiltroAvanzado;
+
+            if (!FiltroAvanzado)
+                txtFiltro.Text = string.Empty;
+
             LimpiarControlesFiltro();
+            CargarTarjetas();
         }
 
         protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string campo = ddlCampo.SelectedValue;
-
-            LimpiarControlesFiltro();
-
-            if (string.IsNullOrWhiteSpace(campo))
-                return;
-
-            CargarOperadores(campo);
-
-            ddlOperador.Visible = true;
-            ddlOperador.Enabled = true;
-            lblOperador.Visible = true;
-
-            switch (campo)
+            try
             {
-                case "Precio":
-                    CargarOperadores(campo);
-                    grpOperador.Visible = true;
-                    grpValor1.Visible = true;
+                string campo = ddlCampo.SelectedValue;
 
+                LimpiarControlesFiltro();
+
+                if (string.IsNullOrWhiteSpace(campo))
+                    return;
+
+                if (FiltroArticuloHelper.UsaOperador(campo))
+                {
+                    lblOperador.Visible = true;
+                    ddlOperador.Visible = true;
                     ddlOperador.Enabled = true;
+
+                    lblValor1.Visible = true;
+                    txtValor1.Visible = true;
                     txtValor1.Enabled = true;
                     txtValor1.Attributes["placeholder"] = "Ingrese valor";
-                    break;
 
-                case "Nombre":
-                case "Codigo":
-                    CargarOperadores(campo);
-                    grpOperador.Visible = true;
-                    grpValor1.Visible = true;
-
-                    ddlOperador.Enabled = true;
-                    txtValor1.Enabled = true;
-                    txtValor1.Attributes["placeholder"] = "Ingrese valor";
-                    break;
-
-                case "Marca":
-                case "Categoria":
-                    grpValorLista.Visible = true;
+                    FiltroArticuloHelper.CargarOperadores(ddlOperador, campo);
+                }
+                else if (FiltroArticuloHelper.UsaLista(campo))
+                {
+                    lblValor.Visible = true;
+                    ddlValor.Visible = true;
                     ddlValor.Enabled = true;
-                    CargarValoresLista(campo);
-                    break;
+
+                    FiltroArticuloHelper.CargarValoresLista(ddlValor, lblValor, campo);
+                }
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex.ToString());
+                Response.Redirect("Error.aspx");
             }
         }
 
         protected void ddlOperador_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string campo = ddlCampo.SelectedValue;
-            string operador = ddlOperador.SelectedValue;
-
-            grpValor2.Visible = false;
-            txtValor2.Enabled = false;
-            txtValor2.Text = string.Empty;
-
-            if (campo == "Precio" && operador == "Entre")
+            try
             {
-                grpValor2.Visible = true;
-                txtValor2.Enabled = true;
-                txtValor2.Attributes["placeholder"] = "Ingrese valor máximo";
+                lblValor2.Visible = false;
+                txtValor2.Visible = false;
+                txtValor2.Enabled = false;
+                txtValor2.Text = string.Empty;
+
+                if (FiltroArticuloHelper.UsaSegundoValor(ddlCampo.SelectedValue, ddlOperador.SelectedValue))
+                {
+                    lblValor2.Visible = true;
+                    txtValor2.Visible = true;
+                    txtValor2.Enabled = true;
+                    txtValor2.Attributes["placeholder"] = "Ingrese valor máximo";
+                }
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex.ToString());
+                Response.Redirect("Error.aspx");
             }
         }
 
@@ -126,21 +138,9 @@ namespace GridFlow.Web
             {
                 ArticuloNegocio negocio = new ArticuloNegocio();
 
-                FiltroArticulo filtro = new FiltroArticulo();
-                filtro.Campo = ddlCampo.SelectedValue;
+                FiltroArticulo filtro = FiltroArticuloHelper.CrearFiltro(ddlCampo.SelectedValue, ddlOperador.SelectedValue, txtValor1.Text, txtValor2.Text, ddlValor.SelectedValue);
 
-                if (filtro.Campo == "Marca" || filtro.Campo == "Categoria")
-                {
-                    filtro.Operador = "Igual";
-                    filtro.Valor1 = ddlValor.SelectedValue;
-                }
-                     
-                else
-                {
-                    filtro.Operador = ddlOperador.SelectedValue;
-                    filtro.Valor1 = txtValor1.Text;
-                    filtro.Valor2 = txtValor2.Text;
-                }
+                FiltroArticuloHelper.ValidarFiltro(filtro);
 
                 ListaArticulos = negocio.Filtrar(filtro);
             }
@@ -153,15 +153,27 @@ namespace GridFlow.Web
 
         protected void btnLimpiarCampos_Click(object sender, EventArgs e)
         {
-            ddlCampo.SelectedIndex = 0;
-            ddlOperador.Items.Clear();
-            ddlValor.Items.Clear();
+            try
+            {
+                ddlCampo.SelectedIndex = 0;
 
-            txtValor1.Text = string.Empty;
-            txtValor2.Text = string.Empty;
+                if (ddlOperador.Items.Count > 0)
+                    ddlOperador.SelectedIndex = -1;
 
-            LimpiarControlesFiltro();
-            CargarTarjetas();
+                if (ddlValor.Items.Count > 0)
+                    ddlValor.SelectedIndex = 0;
+
+                txtValor1.Text = string.Empty;
+                txtValor2.Text = string.Empty;
+
+                LimpiarControlesFiltro();
+                CargarTarjetas();
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex.ToString());
+                Response.Redirect("Error.aspx");
+            }
         }
 
         private void LimpiarControlesFiltro()
@@ -172,68 +184,21 @@ namespace GridFlow.Web
             txtValor1.Text = string.Empty;
             txtValor2.Text = string.Empty;
 
-            grpOperador.Visible = false;
-            grpValor1.Visible = false;
-            grpValor2.Visible = false;
-            grpValorLista.Visible = false;
-
-            txtValor1.Enabled = false;
-            txtValor2.Enabled = false;
-            ddlValor.Enabled = false;
+            lblOperador.Visible = false;
+            ddlOperador.Visible = false;
             ddlOperador.Enabled = false;
+
+            lblValor1.Visible = false;
+            txtValor1.Visible = false;
+            txtValor1.Enabled = false;
+
+            lblValor2.Visible = false;
+            txtValor2.Visible = false;
+            txtValor2.Enabled = false;
+
+            lblValor.Visible = false;
+            ddlValor.Visible = false;
+            ddlValor.Enabled = false;
         }
-
-        private void CargarOperadores(string campo)
-        {
-            ddlOperador.Items.Clear();
-
-            switch (campo)
-            {
-                case "Precio":
-                    ddlOperador.Items.Add(new ListItem("Mayor a", "Mayor"));
-                    ddlOperador.Items.Add(new ListItem("Menor a", "Menor"));
-                    ddlOperador.Items.Add(new ListItem("Entre", "Entre"));
-                    break;
-
-                case "Nombre":
-                case "Codigo":
-                    ddlOperador.Items.Add(new ListItem("Comienza con", "Comienza"));
-                    ddlOperador.Items.Add(new ListItem("Termina con", "Termina"));
-                    ddlOperador.Items.Add(new ListItem("Contiene", "Contiene"));
-                    break;
-
-                case "Marca":
-                case "Categoria":
-                    ddlOperador.Items.Add(new ListItem("Igual a", "Igual"));
-                    break;
-            }
-        }
-
-        private void CargarValoresLista(string campo)
-        {
-            ddlValor.Items.Clear();
-
-            if (campo == "Marca")
-            {
-                lblValor.Text = "Seleccione Marca";
-
-                MarcaNegocio negocio = new MarcaNegocio();
-                ddlValor.DataSource = negocio.Listar();
-                ddlValor.DataTextField = "Descripcion";
-                ddlValor.DataValueField = "Id";
-                ddlValor.DataBind();
-            }
-            else if (campo == "Categoria")
-            {
-                lblValor.Text = "Seleccione Categoría";
-
-                CategoriaNegocio negocio = new CategoriaNegocio();
-                ddlValor.DataSource = negocio.Listar();
-                ddlValor.DataTextField = "Descripcion";
-                ddlValor.DataValueField = "Id";
-                ddlValor.DataBind();
-            }
-        }
-
     }
 }
